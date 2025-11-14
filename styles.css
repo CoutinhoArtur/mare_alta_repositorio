@@ -1,0 +1,593 @@
+/* -----------------------------------------------------------------
+   ARQUIVO DE ESTILOS GERAL (UNIFICADO)
+   Este arquivo contém os estilos para:
+   1. Reset e Variáveis Globais
+   2. Estilos do Site (Frontend - home.html)
+   3. Estilos do Painel (Backend - *.php)
+   4. Regras de Responsividade
+   -----------------------------------------------------------------
+*/
+
+/* --- Importação de Fontes --- */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@400;500;700&display=swap');
+
+
+/* ---------------------------------- */
+/* 1. RESET E VARIÁVEIS GLOBAIS       */
+/* ---------------------------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Roboto', sans-serif;
+}
+
+:root {
+    /* Paleta de cores principal (baseada no frontend) */
+    --primary-color: #4a1d21;   /* Marrom escuro (header) */
+    --primary-color-hover: #6d2a30;
+    --secondary-color: #2c3e50; /* Azul escuro (footer) */
+    --light-bg-color: #e0e9f0;  /* Azul claro (barra de busca) */
+    --white-color: #ffffff;
+    --light-gray-color: #f0f0f0;
+    --text-color: #333;
+    --border-color: #ddd;
+
+    /* Cores de feedback (usadas no painel) */
+    --error-color: #e74c3c;
+    --success-color: #2ecc71;
+    --link-color-actions: #3498db; /* Azul para ações (Editar) */
+}
+
+body {
+    background-color: var(--light-gray-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1300px; /* Largura base do frontend */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+
+/* ---------------------------------- */
+/* 2. ESTILOS DO SITE (FRONTEND)      */
+/* ---------------------------------- */
+
+/* --- Header Principal (Barra Marrom) --- */
+header {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 15px 0;
+}
+
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--white-color);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    list-style: none;
+}
+
+.nav-links li {
+    margin-left: 25px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--white-color);
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.3s;
+}
+
+.nav-links a:hover {
+    opacity: 0.8;
+}
+
+.nav-links i {
+    font-size: 1.2rem;
+}
+
+/* Link de Login com ícone */
+.login-link {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+/* Ícone do Menu Mobile (Hamburguer) */
+.menu-toggle {
+    display: none; /* Escondido no desktop */
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: var(--white-color);
+    cursor: pointer;
+}
+
+/* --- Barra de Busca (Azul Clara) --- */
+.search-bar {
+    background-color: var(--light-bg-color);
+    padding: 15px 0;
+}
+
+.search-bar .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-form {
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+}
+
+.search-form input {
+    flex-grow: 1;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 25px 0 0 25px;
+    outline: none;
+}
+
+.search-form button {
+    padding: 0 20px;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border: none;
+    border-radius: 0 25px 25px 0;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: background-color 0.3s;
+}
+
+.search-form button:hover {
+    background-color: var(--primary-color-hover);
+}
+
+/* --- Seção do Slider --- */
+.slider-section {
+    width: 100%;
+    background-color: var(--primary-color); /* Fundo escuro para o slider */
+    padding: 20px 0;
+    overflow: hidden;
+}
+
+.slider-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+    min-width: 100%;
+    position: relative;
+}
+
+.slide img {
+    width: 100%;
+    display: block;
+    aspect-ratio: 16 / 6; /* Proporção para o banner */
+    object-fit: cover;
+}
+
+/* Botões de Navegação do Slider */
+.slider-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 15px;
+}
+
+.slider-nav button {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: none;
+    color: var(--white-color);
+    font-size: 2rem;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.slider-nav button:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* Pontos de Navegação do Slider */
+.slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.dot.active {
+    background-color: var(--white-color);
+}
+
+/* --- Barra de Informações (Abaixo do Slider) --- */
+.info-bar {
+    background-color: var(--white-color);
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-bar .container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap; /* Para quebrar em telas menores */
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-color);
+}
+
+.info-item i {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+}
+
+.info-text strong {
+    display: block;
+    font-size: 0.9rem;
+    color: #000;
+}
+
+.info-text span {
+    font-size: 0.8rem;
+    color: #555;
+}
+
+/* --- Rodapé --- */
+footer {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: var(--secondary-color);
+    color: var(--light-gray-color);
+    margin-top: 30px;
+}
+
+
+/* ---------------------------------- */
+/* 3. ESTILOS DO PAINEL (BACKEND)     */
+/* ---------------------------------- */
+/* O .container do painel usará o .container global (max-width: 1300px)
+   mas os formulários e tabelas terão suas larguras controladas 
+   seja por 100% (padrão) ou por estilos inline (ex: login.php) 
+*/
+
+/* Estilos para cabeçalhos do painel */
+h2 {
+    color: var(--secondary-color);
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Estilos para formulários do painel */
+form {
+    background-color: var(--white-color);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+form label { /* Alterado para não conflitar */
+    display: block;
+    margin-bottom: 5px;
+    color: var(--secondary-color);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+/* Botão principal (Usa a cor primária) */
+button,
+button[type="submit"] {
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover,
+button[type="submit"]:hover {
+    background-color: var(--primary-color-hover);
+}
+
+/* Estilos para tabelas do painel */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: var(--white-color);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+}
+
+/* Estilos para imagens de thumbnail (painel) */
+.thumbnail {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.update-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+/* Estilos para mensagens (Sucesso/Erro - painel) */
+.message {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    color: var(--white-color);
+}
+
+.success {
+    background-color: var(--success-color);
+}
+
+.error {
+    background-color: var(--error-color);
+}
+
+/* Estilos para links (painel) */
+/* (Estilo global 'a' não definido aqui para não conflitar com .nav-links) */
+/* Estilos específicos para links do painel, se necessário */
+
+/* Estilos para o menu principal (painel) */
+.menu {
+    list-style-type: none;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.menu li {
+    margin: 5px 10px;
+}
+
+.menu a {
+    display: block;
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    text-decoration: none; /* Garante que links do menu não sejam sublinhados */
+}
+
+.menu a:hover {
+    background-color: var(--primary-color-hover);
+    opacity: 1; /* Sobrescreve o hover do nav-links */
+}
+
+/* Estilos para ações na tabela (painel) */
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.actions a {
+    padding: 5px 10px;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.actions a:hover {
+    background-color: var(--primary-color-hover);
+}
+
+/* Estilo para o botão de voltar (painel) */
+.back-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.back-button:hover {
+    background-color: #34495e;
+    opacity: 1;
+}
+
+/* Estilos para ações na tabela (Editar/Excluir - painel) */
+table td a {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 2px;
+    background-color: var(--link-color-actions); /* Azul */
+    color: var(--white-color);
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+table td a:hover {
+    background-color: #2980b9;
+    opacity: 1;
+}
+
+/* Estilo específico para o botão Excluir */
+table td a:last-child {
+    background-color: var(--error-color); /* Vermelho */
+}
+
+table td a:last-child:hover {
+    background-color: #c0392b;
+}
+
+
+/* ---------------------------------- */
+/* 4. REGRAS DE RESPONSIVIDADE        */
+/* ---------------------------------- */
+
+@media (max-width: 900px) {
+    /* Responsividade do Menu Frontend */
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        position: absolute;
+        top: 70px; /* Abaixo do header */
+        right: 0;
+        width: 100%;
+        background-color: var(--primary-color);
+        padding: 10px 0;
+        text-align: center;
+        z-index: 1000;
+    }
+    
+    .nav-links.active {
+        display: flex; /* Mostra o menu quando ativo */
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+    }
+
+    .menu-toggle {
+        display: block; /* Mostra o ícone de hamburguer */
+    }
+}
+
+@media (max-width: 768px) {
+    /* Responsividade Geral e do Painel */
+    .container {
+        padding: 10px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    /* Menu do painel */
+    .menu {
+        flex-direction: column;
+    }
+
+    .menu li {
+        margin: 5px 0;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Responsividade do Frontend */
+    .logo {
+        font-size: 1.2rem;
+    }
+    
+    .slide img {
+        aspect-ratio: 4 / 3; /* Mais quadrado em telas menores */
+    }
+    
+    .slider-nav button {
+        font-size: 1.5rem;
+        width: 40px;
+        height: 40px;
+        padding: 5px 10px;
+    }
+    
+    .dot {
+        width: 10px;
+        height: 10px;
+    }
+    
+    .info-bar .container {
+        flex-direction: column; /* Empilha os itens */
+        align-items: flex-start;
+        padding-left: 30px;
+    }
+}
