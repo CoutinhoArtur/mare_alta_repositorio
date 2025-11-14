@@ -1,43 +1,52 @@
 <?php
 // Inclui o arquivo que valida a sessão do usuário
 include('valida_sessao.php');
-// Inclui o arquivo de conexão com o banco de dados
-include('conexao.php');
+// ... (código PHP existente)...
+// ... (função redimensionarESalvarImagem)...
+// ... (lógica de POST e GET)...
+// ...
+$marcas = $conn->query("SELECT * FROM fornecedores");
 
-// Função para redimensionar e salvar a imagem (sem alterações na lógica)
-function redimensionarESalvarImagem($arquivo, $largura = 80, $altura = 80) {
-    $diretorio_destino = "img/";
-    if (!file_exists($diretorio_destino)) {
-        mkdir($diretorio_destino, 0777, true);
-    }
-    $nome_arquivo = uniqid() . '_' . basename($arquivo["name"]);
-    $caminho_completo = $diretorio_destino . $nome_arquivo;
-    $tipo_arquivo = strtolower(pathinfo($caminho_completo, PATHINFO_EXTENSION));
+// Se foi solicitada a edição de uma marca (via GET), busca os dados dela para preencher o formulário
+$marca = null;
+if (isset($_GET['edit_id'])) {
+// ... (código existente para buscar marca)...
+    $marca = $edit_stmt->get_result()->fetch_assoc();
+    $edit_stmt->close();
+}
+?>
 
-    $check = getimagesize($arquivo["tmp_name"]);
-    if($check === false) { return "O arquivo não é uma imagem válida."; }
-    if ($arquivo["size"] > 5000000) { return "O arquivo é muito grande. O tamanho máximo permitido é 5MB."; }
-    if($tipo_arquivo != "jpg" && $tipo_arquivo != "png" && $tipo_arquivo != "jpeg" && $tipo_arquivo != "gif" ) { return "Apenas arquivos JPG, JPEG, PNG e GIF são permitidos."; }
-
-    if ($tipo_arquivo == "jpg" || $tipo_arquivo == "jpeg") { $imagem_original = imagecreatefromjpeg($arquivo["tmp_name"]); } 
-    elseif ($tipo_arquivo == "png") { $imagem_original = imagecreatefrompng($arquivo["tmp_name"]); } 
-    elseif ($tipo_arquivo == "gif") { $imagem_original = imagecreatefromgif($arquivo["tmp_name"]); }
-
-    $largura_original = imagesx($imagem_original); $altura_original = imagesy($imagem_original);
-    $ratio = min($largura / $largura_original, $altura / $altura_original);
-    $nova_largura = $largura_original * $ratio; $nova_altura = $altura_original * $ratio;
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Marca</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container" style="width: 900px;">
+        <h2>Cadastro de Marca</h2>
+        <!-- Formulário para cadastro/edição de marca -->
+        <!-- O 'action' vazio faz o post para a própria página -->
+        <!-- 'enctype' é necessário para o upload de arquivos -->
+        <form method="post" action="" enctype="multipart/form-data">
+            <!-- ... (inputs do formulário: id, nome, email, telefone)... -->
+    // Cria a nova imagem redimensionada
     $nova_imagem = imagecreatetruecolor($nova_largura, $nova_altura);
     imagecopyresampled($nova_imagem, $imagem_original, 0, 0, 0, 0, $nova_largura, $nova_altura, $largura_original, $altura_original);
 
+    // Salva a nova imagem no destino
     if ($tipo_arquivo == "jpg" || $tipo_arquivo == "jpeg") { imagejpeg($nova_imagem, $caminho_completo, 90); } 
     elseif ($tipo_arquivo == "png") { imagepng($nova_imagem, $caminho_completo); } 
     elseif ($tipo_arquivo == "gif") { imagegif($nova_imagem, $caminho_completo); }
 
+    // Libera a memória
     imagedestroy($imagem_original); imagedestroy($nova_imagem);
     return $caminho_completo;
 }
 
-// Verifica se o formulário foi enviado
+// Verifica se o formulário foi enviado (método POST)
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $id = $_POST['id'];
     $nome = $_POST['nome'];
@@ -51,16 +60,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if(strpos($resultado_upload, 'img/') === 0) {
             $imagem = $resultado_upload;
         } else {
+            // Se a função de upload retornar um erro
             $mensagem_erro = $resultado_upload;
         }
     }
 
-    // Prepara a query SQL para inserção ou atualização (tabela 'fornecedores' mantida)
+    // Prepara a query SQL para inserção ou atualização
     if ($id) {
         // Se o ID existe, é uma atualização
         $sql = "UPDATE fornecedores SET nome=?, email=?, telefone=?";
         $params = [$nome, $email, $telefone];
         
+        // Se uma nova imagem foi enviada, adiciona à query
         if($imagem) {
             $sql .= ", imagem=?";
             $params[] = $imagem;
@@ -70,7 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $params[] = $id;
         
         $stmt = $conn->prepare($sql);
-        $types = str_repeat('s', count($params) - 1) . 'i'; // Tipos para bind_param
+        // Define os tipos (string 's' e integer 'i') dinamicamente
+        $types = str_repeat('s', count($params) - 1) . 'i'; 
         $stmt->bind_param($types, ...$params);
         
         $mensagem = "Marca atualizada com sucesso!";
@@ -82,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mensagem = "Marca cadastrada com sucesso!";
     }
 
-    // Executa a query e verifica se houve erro
+    // Executa a query e define a classe da mensagem (sucesso ou erro)
     if ($stmt->execute()) {
         $class = "success";
     } else {
@@ -92,11 +104,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->close();
 }
 
-// Verifica se foi solicitada a exclusão de uma marca
+// Verifica se foi solicitada a exclusão de uma marca (via GET)
 if (isset($_GET['delete_id'])) {
     $delete_id = $_GET['delete_id'];
     
-    // Verifica se a marca tem artigos cadastrados
+    // Antes de excluir, verifica se a marca tem artigos (produtos) vinculados
     $check_stmt = $conn->prepare("SELECT COUNT(*) as count FROM produtos WHERE fornecedor_id = ?");
     $check_stmt->bind_param("i", $delete_id);
     $check_stmt->execute();
@@ -104,9 +116,11 @@ if (isset($_GET['delete_id'])) {
     $check_stmt->close();
     
     if ($check_produtos['count'] > 0) {
+        // Se tiver artigos, impede a exclusão
         $mensagem = "Não é possível excluir esta marca pois existem artigos esportivos cadastrados para ela.";
         $class = "error";
     } else {
+        // Se não tiver artigos, prossegue com a exclusão
         $delete_stmt = $conn->prepare("DELETE FROM fornecedores WHERE id=?");
         $delete_stmt->bind_param("i", $delete_id);
         if ($delete_stmt->execute()) {
@@ -123,7 +137,7 @@ if (isset($_GET['delete_id'])) {
 // Busca todas as marcas para listar na tabela
 $marcas = $conn->query("SELECT * FROM fornecedores");
 
-// Se foi solicitada a edição de uma marca, busca os dados dela
+// Se foi solicitada a edição de uma marca (via GET), busca os dados dela para preencher o formulário
 $marca = null;
 if (isset($_GET['edit_id'])) {
     $edit_id = $_GET['edit_id'];
@@ -147,6 +161,8 @@ if (isset($_GET['edit_id'])) {
     <div class="container" style="width: 900px;">
         <h2>Cadastro de Marca</h2>
         <!-- Formulário para cadastro/edição de marca -->
+        <!-- O 'action' vazio faz o post para a própria página -->
+        <!-- 'enctype' é necessário para o upload de arquivos -->
         <form method="post" action="" enctype="multipart/form-data">
             <input type="hidden" name="id" value="<?php echo $marca['id'] ?? ''; ?>">
             
@@ -161,6 +177,8 @@ if (isset($_GET['edit_id'])) {
             
             <label for="imagem">Logo/Imagem da Marca:</label>
             <input type="file" name="imagem" accept="image/*">
+            
+            <!-- Mostra a imagem atual se estiver editando -->
             <?php if (isset($marca['imagem']) && $marca['imagem']): ?>
                 <img src="<?php echo $marca['imagem']; ?>" alt="Imagem atual da marca" class="update-image">
             <?php endif; ?>
@@ -168,11 +186,13 @@ if (isset($_GET['edit_id'])) {
             <button type="submit"><?php echo $marca ? 'Atualizar' : 'Cadastrar'; ?></button>
         </form>
         
-        <!-- Exibe mensagens de sucesso ou erro -->
-        <?php
-        if (isset($mensagem)) echo "<p class='message " . $class . "'>$mensagem</p>";
-        if (isset($mensagem_erro)) echo "<p class='message error'>$mensagem_erro</p>";
-        ?>
+        <!-- Exibe mensagens de sucesso ou erro (SEÇÃO CORRIGIDA) -->
+        <?php if (isset($mensagem)): ?>
+            <p class="message <?php echo $class; ?>"><?php echo $mensagem; ?></p>
+        <?php endif; ?>
+        <?php if (isset($mensagem_erro)): ?>
+            <p class="message error"><?php echo $mensagem_erro; ?></p>
+        <?php endif; ?>
 
         <h2>Listagem de Marcas</h2>
         <!-- Tabela para listar as marcas cadastradas -->
@@ -188,6 +208,7 @@ if (isset($_GET['edit_id'])) {
                 </tr>
             </thead>
             <tbody>
+                <!-- Loop para exibir cada marca -->
                 <?php while ($row = $marcas->fetch_assoc()): ?>
                 <tr>
                     <td><?php echo $row['id']; ?></td>
@@ -195,6 +216,7 @@ if (isset($_GET['edit_id'])) {
                     <td><?php echo $row['email']; ?></td>
                     <td><?php echo $row['telefone']; ?></td>
                     <td>
+                        <!-- Mostra a miniatura da imagem se ela existir -->
                         <?php if ($row['imagem']): ?>
                             <img src="<?php echo $row['imagem']; ?>" alt="Imagem da marca" class="thumbnail">
                         <?php else: ?>
@@ -202,6 +224,7 @@ if (isset($_GET['edit_id'])) {
                         <?php endif; ?>
                     </td>
                     <td>
+                        <!-- Links de Ação (Editar e Excluir) -->
                         <a href="?edit_id=<?php echo $row['id']; ?>">Editar</a>
                         <a href="?delete_id=<?php echo $row['id']; ?>" onclick="return confirm('Tem certeza que deseja excluir?')">Excluir</a>
                     </td>
@@ -210,7 +233,8 @@ if (isset($_GET['edit_id'])) {
             </tbody>
         </table>
         <div class="actions">
-          <a href="index.php" class="back-button">Voltar ao Painel</a>
+          <!-- Botão "Voltar" atualizado para 'painel.php' -->
+          <a href="painel.php" class="back-button">Voltar ao Painel</a>
         </div>
     </div>
 </body>

@@ -1,26 +1,169 @@
-<?php include('valida_sessao.php'); ?>
-<!-- Inclui o arquivo 'valida_sessao.php' para garantir que o usuário esteja autenticado -->
-
+<?php
+// Inicia a sessão para verificar se o usuário está logado
+session_start();
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Principal - SportShop</title>
-    <!-- Link para o arquivo CSS para estilização da página -->
+    <title>SportShop - A sua loja de esportes</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- Link para o arquivo de CSS  -->
     <link rel="stylesheet" href="styles.css">
+
 </head>
 <body>
-    <div class="container">
-        <!-- Exibe uma mensagem de boas-vindas com o nome do usuário logado -->
-        <h2>Painel de Controle - Bem-vindo, <?php echo $_SESSION['usuario']; ?></h2>
-        <ul class="menu">
-            <!-- Links de navegação para as funcionalidades do sistema (com texto adaptado) -->
-            <li><a href="cadastro_fornecedor.php">Cadastro de Marcas</a></li>
-            <li><a href="cadastro_produto.php">Cadastro de Artigos Esportivos</a></li>
-            <li><a href="listagem_produtos.php">Listagem de Artigos Esportivos</a></li>
-            <li><a href="logout.php">Sair</a></li>
-        </ul>
+
+    <!-- Header (Barra Marrom) -->
+    <header>
+        <div class="container">
+            <!-- Link do logo agora aponta para index.php -->
+            <a href="index.php" class="logo">SportShop</a>
+            
+            <!-- Links de Navegação (Desktop) -->
+            <ul class="nav-links" id="nav-menu">
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-futbol"></i>
+                        <span>Futebol</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-basketball"></i>
+                        <span>Basquete</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-person-running"></i>
+                        <span>Corrida</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa-solid fa-dumbbell"></i>
+                        <span>Fitness</span>
+                    </a>
+                </li>
+                <li>
+                    <?php
+                    // Verifica se o usuário está logado na sessão
+                    if (isset($_SESSION['usuario'])) {
+                        // Se estiver logado, mostra o link para o Painel
+                        echo '<a href="painel.php" class="login-link">
+                                <i class="fa-solid fa-user-shield"></i>
+                                <span>Painel</span>
+                              </a>';
+                    } else {
+                        // Se não estiver logado, mostra o link de Login
+                        echo '<a href="login.php" class="login-link">
+                                <i class="fa-solid fa-user"></i>
+                                <span>Login</span>
+                              </a>';
+                    }
+                    ?>
+                </li>
+            </ul>
+            
+            <!-- Botão Hamburguer (Mobile) -->
+            <button class="menu-toggle" id="menu-toggle" aria-label="Abrir menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Barra de Busca (Azul Clara) -->
+    <div class="search-bar">
+        <div class="container">
+            <form class="search-form">
+                <input type="text" placeholder="O que você está procurando?">
+                <button type="submit" aria-label="Buscar">
+                    <i class="fa-solid fa-search"></i>
+                </button>
+            </form>
+        </div>
     </div>
+
+    <!-- Seção do Slider -->
+    <section class="slider-section">
+        <div class="slider-container">
+            <!-- Slides -->
+            <div class="slider">
+                <div class="slide">
+                    <!-- Imagem de placeholder 1 (Tema Esporte) -->
+                    <img src="https://placehold.co/1300x500/4a1d21/ffffff?text=Promoção+de+Camisas+de+Time" alt="Banner 1 - Promoção de Camisas de Time">
+                </div>
+                <div class="slide">
+                    <!-- Imagem de placeholder 2 (Tema Esporte) -->
+                    <img src="https://placehold.co/1300x500/2c3e50/ffffff?text=Novos+Tênis+de+Corrida" alt="Banner 2 - Novos Tênis de Corrida">
+                </div>
+                <div class="slide">
+                    <!-- Imagem de placeholder 3 (Tema Esporte) -->
+                    <img src="https://placehold.co/1300x500/3498db/ffffff?text=Equipamentos+de+Basquete+com+20%25+OFF" alt="Banner 3 - Equipamentos de Basquete">
+                </div>
+            </div>
+
+            <!-- Botões de Navegação -->
+            <div class="slider-nav">
+                <button id="prev-slide" aria-label="Slide anterior"><i class="fa-solid fa-chevron-left"></i></button>
+                <button id="next-slide" aria-label="Próximo slide"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <!-- Pontos (Dots) -->
+            <div class="slider-dots" id="slider-dots">
+                <!-- Dots serão gerados via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Barra de Informações -->
+    <div class="info-bar">
+        <div class="container">
+            <div class="info-item">
+                <i class="fa-solid fa-tag"></i>
+                <div class="info-text">
+                    <strong>10% OFF na 1ª compra</strong>
+                    <span>Cadastre-se na Newsletter</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-credit-card"></i>
+                <div class="info-text">
+                    <strong>Até 10x sem juros</strong>
+                    <span>Parcele em até 10x sem juros</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-store"></i>
+                <div class="info-text">
+                    <strong>Retire na Loja</strong>
+                    <span>Compre online e retire na loja</span>
+                </div>
+            </div>
+            <div class="info-item">
+                <i class="fa-solid fa-truck-fast"></i>
+                <div class="info-text">
+                    <strong>Ganhe Entrega Grátis</strong>
+                    <span>Frete grátis acima de R$ 299</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Rodapé -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 SportShop. Todos os direitos reservados.</p>
+            <p>Este é um site de demonstração.</p>
+        </div>
+    </footer>
+
+    <!-- Link para o arquivo JavaScript  -->
+    <script src="scripts.js"></script>
+
 </body>
 </html>

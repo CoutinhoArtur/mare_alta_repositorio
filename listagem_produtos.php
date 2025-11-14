@@ -91,8 +91,8 @@ $artigos = $conn->query("
             </tbody>
         </table>
 
-        <!-- Botão para voltar à página principal -->
-        <a href="index.php" class="back-button">Voltar ao Painel</a>
+        <!-- Botão para voltar à página principal (agora painel.php) -->
+        <a href="painel.php" class="back-button">Voltar ao Painel</a>
     </div>
 </body>
 </html>

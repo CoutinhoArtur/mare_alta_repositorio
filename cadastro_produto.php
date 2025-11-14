@@ -193,6 +193,7 @@ $marcas = $conn->query("SELECT id, nome FROM fornecedores");
                 </tr>
             </thead>
             <tbody>
+                <?php $artigos->data_seek(0); // Reinicia o ponteiro do resultado ?>
                 <?php while ($row = $artigos->fetch_assoc()): ?>
                 <tr>
                     <td><?php echo $row['id']; ?></td>
@@ -215,7 +216,8 @@ $marcas = $conn->query("SELECT id, nome FROM fornecedores");
                 <?php endwhile; ?>
             </tbody>
         </table>
-        <a href="index.php" class="back-button">Voltar ao Painel</a>
+        <!-- Link de voltar agora aponta para painel.php -->
+        <a href="painel.php" class="back-button">Voltar ao Painel</a>
     </div>
 </body>
 </html>

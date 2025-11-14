@@ -21,8 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($result->num_rows > 0) {
         // Se o usuário for encontrado, armazena seu nome na sessão.
         $_SESSION['usuario'] = $usuario;
-        // Redireciona o usuário para a página inicial do painel.
-        header('Location: index.php');
+        // Redireciona o usuário para a página inicial do painel (agora painel.php).
+        header('Location: painel.php');
     } else {
         // Se o login falhar, define uma mensagem de erro.
         $error = "Usuário ou senha inválidos.";
@@ -50,7 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!-- Exibe a mensagem de erro, se houver. -->
             <?php if (isset($error)) echo "<p class='message error'>$error</p>"; ?>
         </form>
-        <a href="home.html" class="back-button" style="background-color: #7f8c8d;">Voltar para o Site</a>
+        <!-- Link de voltar agora aponta para index.php (a nova home) -->
+        <a href="index.php" class="back-button" style="background-color: #7f8c8d;">Voltar para o Site</a>
     </div>
 </body>
 </html>
